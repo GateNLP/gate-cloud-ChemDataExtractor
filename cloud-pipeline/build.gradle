@@ -1,0 +1,72 @@
+import org.gradle.util.VersionNumber
+import org.gradle.api.InvalidUserDataException
+
+plugins {
+  id 'base'
+}
+
+version = "0.1"
+group = "gatecloud.hyperpartisan"
+
+repositories {
+    mavenCentral()
+    maven { url "http://repo.gate.ac.uk/content/groups/public/" }
+}
+
+configurations {
+  gate
+}
+
+dependencies {
+    // for packagegapp specifically
+    gate("uk.ac.gate:gate-core:9.0.1") {
+        // some of these exclusions are necessary for gate-core 8.4.x, some for 8.6.x
+        exclude module: 'log4j'
+        exclude module: 'slf4j-log4j12'
+        exclude module: 'spring-aop'
+    }
+    gate("org.slf4j:log4j-over-slf4j:1.7.26")
+}
+
+// get sensible logs out of packagegapp
+ant.lifecycleLogLevel = "INFO"
+
+// tasks to build the app package
+task getElgPlugin {
+  doLast {
+    ant.mkdir(dir:"downloads")
+    ant.get(src:'https://gitlab.com/european-language-grid/usfd/gate-elg-client/-/releases/0.2/downloads/gate-elg-client-0.2.zip', dest: "downloads", skipExisting:true)
+  }
+}
+
+task prepareAppToPackage(type:Copy) {
+  dependsOn 'getElgPlugin'
+  into('plugins') {
+    from zipTree("downloads/gate-elg-client-0.2.zip")
+  }
+  from fileTree("src")
+  into file("${buildDir}/app")
+}
+
+task packageGapp {
+  dependsOn 'prepareAppToPackage'
+  doLast {
+    ant.typedef(resource:'gate/util/ant/antlib.xml', classpath:configurations.gate.asPath)
+    mkdir "${buildDir}/cloud-app"
+    ant.packagegapp(src:file("${buildDir}/app/application.xgapp"),
+            destfile:"${buildDir}/cloud-app/application.xgapp",
+            copyPlugins: true,
+            mavenCache: "${buildDir}/cloud-app/maven-cache.gate") {
+    }
+  }
+}
+
+task cloudZip(type:Zip) {
+  dependsOn 'packageGapp'
+  from file("${buildDir}/cloud-app")
+  into('metadata'){
+    from file("src/metadata")
+  }
+  destinationDirectory = file("${buildDir}/distributions")
+  archiveFileName = "ChemDataExtractor-elg.zip"
+}

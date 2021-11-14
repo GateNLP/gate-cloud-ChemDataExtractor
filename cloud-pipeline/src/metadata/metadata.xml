@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadata xmlns="http://gate.ac.uk/ns/pipeline-metadata">
+  <pipeline-name>ChemDataExtractor</pipeline-name>
+  <slug>chemdataextractor</slug>
+  <ordering>80</ordering>
+  <annotation-selectors>:ChemicalEntity</annotation-selectors>
+  <additional-annotations></additional-annotations>
+  <tags>
+    <tag>Chemistry</tag>
+  </tags>
+  <allow-batch>no</allow-batch>
+</metadata>
