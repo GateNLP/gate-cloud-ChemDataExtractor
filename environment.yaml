@@ -1,0 +1,11 @@
+name: cde_env
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6.1
+  - rust=1.41.0
+  - pip=20.2.4
+  - gcc_linux-64=7.3.0
+  - gxx_linux-64=7.3.0
