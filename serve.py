@@ -51,7 +51,7 @@ async def processPOST(request: TextRequest):
                 annot["features"]["length"]=token.lex.length
                 tokens.append(annot)
     
-    return dict(response = { 'type':'annotations', 'annotations':{'ChemicalEntity':cems, 'Sentence': sentences, 'Token':tokens,'Record':doc.records.serialize()} })
+    return dict(response = { 'type':'annotations', 'annotations':{'ChemicalEntity':cems, 'Sentence': sentences, 'Token':tokens} })
     
 def annotation(cem):
     """Converts a Chemical Entity Mention (CME) into an ELG-compliant annotation"""
