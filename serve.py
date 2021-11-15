@@ -4,6 +4,7 @@ import os
 import requests
 
 from fastapi import FastAPI, Request, HTTPException
+from pydantic import BaseModel
 from typing import Optional
 
 from chemdataextractor import Document
@@ -12,10 +13,16 @@ LOGGER = getLogger(__name__)
 
 app = FastAPI(root_path=os.environ.get('ROOT_PATH'))
 
+class TextRequest(BaseModel):
+    type: str
+    features: Optional[dict] = None
+    content: str
+    mimeType: str
+
 @app.post("/")
-async def processPOST(request: Request):
-    text = await request.body()
-    LOGGER.info(text)
+async def processPOST(request: TextRequest):
+    text = request.content
+    
     # get the binary data from the request body
     doc = Document(text)
     
