@@ -26,11 +26,34 @@ async def processPOST(request: TextRequest):
     # get the binary data from the request body
     doc = Document(text)
     
-    cems = [cem_annotation(cem) for cem in doc.cems]
+    cems = [annotation(cem) for cem in doc.cems]
+    sentences = []
+    tokens = []
     
-    return dict(response = { 'type':'annotations', 'annotations':{'ChemicalEntity':cems} })
+    records = {}
     
-def cem_annotation(cem):
+    for record in doc.records.serialize():
+        for name in record["names"]:
+            records[name] = record
+            
+    for cem in cems:
+        if cem["features"]["string"] in records:
+            cem["features"] = {**cem["features"], **records[cem["features"]["string"]]}
+    
+    for element in doc.elements:
+        for sentence in element.sentences:
+            sentences.append(annotation(sentence))
+            posTags = sentence.pos_tagged_tokens
+            for i, token in enumerate(sentence.tokens):
+                annot = annotation(token)
+                annot["features"]["category"]=posTags[i][1]
+                annot["features"]["normalized"]=token.lex.normalized
+                annot["features"]["length"]=token.lex.length
+                tokens.append(annot)
+    
+    return dict(response = { 'type':'annotations', 'annotations':{'ChemicalEntity':cems, 'Sentence': sentences, 'Token':tokens,'Record':doc.records.serialize()} })
+    
+def annotation(cem):
     """Converts a Chemical Entity Mention (CME) into an ELG-compliant annotation"""
     return {
       'start':cem.start, 'end':cem.end,

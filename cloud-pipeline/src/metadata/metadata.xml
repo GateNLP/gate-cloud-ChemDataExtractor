@@ -4,9 +4,12 @@
   <slug>chemdataextractor</slug>
   <ordering>80</ordering>
   <annotation-selectors>:ChemicalEntity</annotation-selectors>
-  <additional-annotations></additional-annotations>
+  <additional-annotations>:Sentence, :Token</additional-annotations>
   <tags>
     <tag>Chemistry</tag>
+    <tag>Named Entity</tag>
+    <tag>Part-of-Speech</tag>
+    <tag>English</tag>
   </tags>
   <allow-batch>no</allow-batch>
 </metadata>
