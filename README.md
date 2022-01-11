@@ -34,3 +34,7 @@ docker run -it --rm --entrypoint /bin/bash ghcr.io/gatenlp/chemdataextractor:mai
 ## Building the GATE Cloud Pipeline
 
 The GATE Cloud pipeline is then a thin wrapper which calls the ELG endpoint using the ELG client PR.  To build this, run `./gradlew cloudZip` in the `cloud-pipeline` directory and the zip file will be created under `build/distributions`.
+
+## Licence
+
+The code in this repository is licenced under the [MIT licence](LICENSE), as is [ChemDataExtractor](https://github.com/mcs07/ChemDataExtractor) itself.
