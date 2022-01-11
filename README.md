@@ -1,4 +1,4 @@
-# GATE Cloud based wrapper for ChemDataExtractor
+# ELG and GATE Cloud wrapper for ChemDataExtractor
 
 This repository contains the configuration to build the ChemDataExtractor app for GATE Cloud.  The app is in two parts, an ELG-compatible service that does the actual Python NER, and a thin GATE application that uses the ELG client PR to call the tagger.
 
@@ -7,10 +7,10 @@ This repository contains the configuration to build the ChemDataExtractor app fo
 
 
 ```
-docker buildx build -t elg.docker.gate.ac.uk/chemdataextractor:latest .
+docker buildx build -t chemdataextractor:latest .
 ```
 
-The image is deployed to the GATE Cloud k8s cluster via the elg helm chart in gate-cloud-cluster
+The image is also built automatically and pushed to `ghcr.io` when changes are pushed, see the "packages" section to the right for details.
 
 
 ### Updating Dependencies
@@ -24,7 +24,7 @@ conda lock -p linux-64 -f environment.yaml
 
 
 ```
-docker run -it --rm --entrypoint /bin/bash elg.docker.gate.ac.uk/chemdataextractor:latest
+docker run -it --rm --entrypoint /bin/bash ghcr.io/gatenlp/chemdataextractor:main
 ```
 
 ```
